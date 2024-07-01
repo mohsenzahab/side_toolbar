@@ -1,7 +1,7 @@
 name: side_toolbar
 description: A playable and customizable and easy-to-use toolbar made with flutter
 version: 0.0.2
-homepage: https://github.com/SalehTZ/playable_toolbar_flutter
+homepage: https://github.com/mohsenzahab/side_toolbar
 
 environment:
   sdk: ">=2.17.3 <3.0.0"
