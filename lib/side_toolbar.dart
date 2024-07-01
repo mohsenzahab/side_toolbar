@@ -1,9 +1,10 @@
-library playable_toolbar_flutter;
+library side_toolbar;
 
 import 'package:flutter/material.dart';
-import 'package:playable_toolbar_flutter/constants.dart';
-import 'package:playable_toolbar_flutter/list_item_model.dart';
-import 'package:playable_toolbar_flutter/menu_item.dart';
+
+import 'constants.dart';
+import 'list_item_model.dart';
+import 'menu_item.dart';
 
 class PlayableToolbarWidget extends StatefulWidget {
   const PlayableToolbarWidget({
@@ -17,7 +18,13 @@ class PlayableToolbarWidget extends StatefulWidget {
     this.toolbarBackgroundRadius = 15,
     this.toolbarBackgroundColor = Colors.white,
     this.toolbarShadow = Colors.black26,
+    this.itemsPadding = 12,
+    this.onLongPressMoveItems = false,
   }) : super(key: key);
+
+  final bool onLongPressMoveItems;
+
+  final double itemsPadding;
 
   /// List of items you want to add to toolbar.
   final List<ListItemModel> toolbarItems;
@@ -118,7 +125,7 @@ class _PlayableToolbarWidgetState extends State<PlayableToolbarWidget> {
   List<bool> longPressedItemsFlags = [];
 
   void _updateLongPressedItemsFlags({double longPressYLocation = 0}) {
-    List<bool> _longPressedItemsFlags = [];
+    List<bool> newLongPressedItemsFlags = [];
     for (int i = 0; i <= widget.toolbarItems.length - 1; i++) {
       bool isLongPressed = itemYPositions[i] >= 0 &&
           longPressYLocation > itemYPositions[i] &&
@@ -126,10 +133,10 @@ class _PlayableToolbarWidgetState extends State<PlayableToolbarWidget> {
               (itemYPositions.length > i + 1
                   ? itemYPositions[i + 1]
                   : widget.toolbarHeight);
-      _longPressedItemsFlags.add(isLongPressed);
+      newLongPressedItemsFlags.add(isLongPressed);
     }
     setState(() {
-      longPressedItemsFlags = _longPressedItemsFlags;
+      longPressedItemsFlags = newLongPressedItemsFlags;
     });
   }
 
@@ -137,22 +144,22 @@ class _PlayableToolbarWidgetState extends State<PlayableToolbarWidget> {
   List<double> itemYPositions = [];
 
   void _updateItemsScrollData({double scrollPosition = 0}) {
-    List<double> _itemScrollScaleValues = [];
-    List<double> _itemYPositions = [];
+    List<double> newItemScrollScaleValues = [];
+    List<double> newItemYPositions = [];
     for (int i = 0; i <= widget.toolbarItems.length - 1; i++) {
       double itemTopPosition = i * (itemHeight + widget.itemsGutter);
-      _itemYPositions.add(itemTopPosition - scrollPosition);
+      newItemYPositions.add(itemTopPosition - scrollPosition);
 
       double itemBottomPosition = (i + 1) * (itemHeight + widget.itemsGutter);
       double distanceToMaxScrollExtent =
           widget.toolbarHeight + scrollPosition - itemTopPosition;
       bool itemIsOutOfView =
           distanceToMaxScrollExtent < 0 || scrollPosition > itemBottomPosition;
-      _itemScrollScaleValues.add(itemIsOutOfView ? 0.4 : 1);
+      newItemScrollScaleValues.add(itemIsOutOfView ? 0.4 : 1);
     }
     setState(() {
-      itemScrollScaleValues = _itemScrollScaleValues;
-      itemYPositions = _itemYPositions;
+      itemScrollScaleValues = newItemScrollScaleValues;
+      itemYPositions = newItemYPositions;
     });
   }
 
@@ -176,27 +183,27 @@ class _PlayableToolbarWidgetState extends State<PlayableToolbarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        height: widget.toolbarHeight,
-        margin: EdgeInsets.only(left: widget.toolbarHorizontalPadding),
+    return Container(
+      height: widget.toolbarHeight,
+      margin:
+          EdgeInsetsDirectional.only(start: widget.toolbarHorizontalPadding),
+      child: ClipRRect(
+        borderRadius:
+            BorderRadius.all(Radius.circular(widget.toolbarBackgroundRadius)),
         child: Stack(
           children: [
-            Positioned(
-              child: Container(
-                width: widget.toolbarWidth,
-                decoration: BoxDecoration(
-                  color: widget.toolbarBackgroundColor,
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(widget.toolbarBackgroundRadius)),
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 20,
-                      color: widget.toolbarShadow,
-                    ),
-                  ],
-                ),
+            Container(
+              width: widget.toolbarWidth,
+              decoration: BoxDecoration(
+                color: widget.toolbarBackgroundColor,
+                borderRadius: BorderRadius.all(
+                    Radius.circular(widget.toolbarBackgroundRadius)),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 20,
+                    color: widget.toolbarShadow,
+                  ),
+                ],
               ),
             ),
             GestureDetector(
@@ -230,12 +237,14 @@ class _PlayableToolbarWidgetState extends State<PlayableToolbarWidget> {
                   child: ListView.builder(
                     controller: scrollController,
                     itemCount: widget.toolbarItems.length,
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.all(widget.toolbarHorizontalPadding),
                     itemBuilder: (context, index) {
                       return SideBarItem(
                         widget.toolbarItems[index],
                         height: itemHeight,
+                        itemPadding: widget.itemsPadding,
                         scrollScale: itemScrollScaleValues[index],
+                        moveOnLongPress: widget.onLongPressMoveItems,
                         isLongPressed: longPressedItemsFlags[index],
                         gutter: widget.itemsGutter,
                         itemsOffset: widget.itemsOffset,

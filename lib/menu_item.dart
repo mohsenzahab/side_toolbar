@@ -9,29 +9,35 @@ class SideBarItem extends StatelessWidget {
     required this.height,
     required this.scrollScale,
     this.isLongPressed = false,
+    this.moveOnLongPress = false,
     this.gutter = 10,
     this.toolbarWidth,
     this.itemsOffset,
+    this.itemPadding = 12,
   }) : super(key: key);
 
   final ListItemModel toolbarItem;
   final double height;
   final double scrollScale;
   final bool isLongPressed;
+  final bool moveOnLongPress;
   final double gutter;
   final double? toolbarWidth;
   final double? itemsOffset;
+  final double itemPadding;
 
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.centerLeft,
+      key: ValueKey(toolbarItem.title),
+      alignment: AlignmentDirectional.centerStart,
       child: GestureDetector(
         onTap: toolbarItem.onTap,
         child: SizedBox(
           height: height + gutter,
           // width: Constants.toolbarWidth,
           child: Stack(
+            alignment: Alignment.center,
             children: [
               AnimatedScale(
                 duration: Constants.scrollScaleAnimationDuration,
@@ -40,8 +46,8 @@ class SideBarItem extends StatelessWidget {
                 child: AnimatedContainer(
                   duration: Constants.longPressAnimationDuration,
                   curve: Constants.scrollScaleAnimationCurve,
-                  height: height + (isLongPressed ? 0 : 0),
-                  width: isLongPressed ? toolbarWidth! * 2 : height,
+                  height: height + (isLongPressed ? 10 : 0),
+                  width: isLongPressed ? toolbarWidth! * 3 : height,
                   decoration: BoxDecoration(
                     color: toolbarItem.color,
                     borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -53,9 +59,9 @@ class SideBarItem extends StatelessWidget {
                     ],
                   ),
                   alignment: Alignment.center,
-                  margin: EdgeInsets.only(
-                    bottom: gutter,
-                    left: isLongPressed ? itemsOffset! : 0,
+                  margin: EdgeInsetsDirectional.only(
+                    // bottom: gutter,
+                    start: moveOnLongPress && isLongPressed ? itemsOffset! : 0,
                   ),
                 ),
               ),
@@ -63,35 +69,42 @@ class SideBarItem extends StatelessWidget {
                 child: AnimatedPadding(
                   duration: Constants.longPressAnimationDuration,
                   curve: Constants.longPressAnimationCurve,
-                  padding: EdgeInsets.only(
-                    bottom: gutter,
-                    left: 12 + (isLongPressed ? itemsOffset! : 0),
+                  padding: EdgeInsetsDirectional.only(
+                    // bottom: gutter,
+                    start:
+                        (moveOnLongPress && isLongPressed ? itemsOffset! : 0),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AnimatedScale(
-                        scale: scrollScale,
-                        duration: Constants.scrollScaleAnimationDuration,
-                        curve: Constants.scrollScaleAnimationCurve,
-                        child: Icon(
-                          toolbarItem.icon,
-                          color: Colors.white,
+                      Expanded(
+                        child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: AnimatedScale(
+                            scale: scrollScale,
+                            duration: Constants.scrollScaleAnimationDuration,
+                            curve: Constants.scrollScaleAnimationCurve,
+                            child: toolbarItem.icon,
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: AnimatedOpacity(
-                          opacity: isLongPressed ? 1 : 0,
+                      Flexible(
+                        child: AnimatedAlign(
                           duration: Constants.longPressAnimationDuration,
-                          curve: Constants.longPressAnimationCurve,
-                          child: Text(
-                            toolbarItem.title,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
+                          alignment: AlignmentDirectional.centerEnd,
+                          widthFactor: isLongPressed ? 1 : 0,
+                          child: AnimatedOpacity(
+                            opacity: isLongPressed ? 1 : 0,
+                            duration: Constants.longPressAnimationDuration,
+                            curve: Constants.longPressAnimationCurve,
+                            child: Text(
+                              toolbarItem.title,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                              maxLines: 1,
                             ),
-                            maxLines: 1,
                           ),
                         ),
                       ),

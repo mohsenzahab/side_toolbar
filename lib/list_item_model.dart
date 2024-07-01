@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ListItemModel {
   final String title;
   final Color color;
-  final IconData icon;
+  final Widget icon;
   final VoidCallback onTap;
 
   ListItemModel({
