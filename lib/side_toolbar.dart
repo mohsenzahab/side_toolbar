@@ -20,7 +20,10 @@ class PlayableToolbarWidget extends StatefulWidget {
     this.toolbarShadow = Colors.black26,
     this.itemsPadding = 12,
     this.onLongPressMoveItems = false,
+    this.onItemSelected,
   }) : super(key: key);
+
+  final void Function(int index)? onItemSelected;
 
   final bool onLongPressMoveItems;
 
@@ -181,6 +184,8 @@ class _PlayableToolbarWidgetState extends State<PlayableToolbarWidget> {
 
   bool isLongPressed = false;
 
+  int? selectedItem;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -249,6 +254,15 @@ class _PlayableToolbarWidgetState extends State<PlayableToolbarWidget> {
                         gutter: widget.itemsGutter,
                         itemsOffset: widget.itemsOffset,
                         toolbarWidth: widget.toolbarWidth,
+                        isSelected: selectedItem == index,
+                        onItemSelect: widget.onItemSelected != null
+                            ? () {
+                                setState(() {
+                                  selectedItem = index;
+                                });
+                                widget.onItemSelected!(index);
+                              }
+                            : null,
                       );
                     },
                   ),

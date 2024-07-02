@@ -9,22 +9,26 @@ class SideBarItem extends StatelessWidget {
     required this.height,
     required this.scrollScale,
     this.isLongPressed = false,
+    this.isSelected = false,
     this.moveOnLongPress = false,
     this.gutter = 10,
     this.toolbarWidth,
     this.itemsOffset,
     this.itemPadding = 12,
+    this.onItemSelect,
   }) : super(key: key);
 
   final ListItemModel toolbarItem;
   final double height;
   final double scrollScale;
   final bool isLongPressed;
+  final bool isSelected;
   final bool moveOnLongPress;
   final double gutter;
   final double? toolbarWidth;
   final double? itemsOffset;
   final double itemPadding;
+  final VoidCallback? onItemSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +36,12 @@ class SideBarItem extends StatelessWidget {
       key: ValueKey(toolbarItem.title),
       alignment: AlignmentDirectional.centerStart,
       child: GestureDetector(
-        onTap: toolbarItem.onTap,
+        onTap: () {
+          toolbarItem.onTap();
+          onItemSelect?.call();
+        },
         child: SizedBox(
-          height: height + gutter,
+          height: height + gutter + (isLongPressed ? 10 : 0),
           // width: Constants.toolbarWidth,
           child: Stack(
             alignment: Alignment.center,
@@ -49,7 +56,9 @@ class SideBarItem extends StatelessWidget {
                   height: height + (isLongPressed ? 10 : 0),
                   width: isLongPressed ? toolbarWidth! * 3 : height,
                   decoration: BoxDecoration(
-                    color: toolbarItem.color,
+                    color: isSelected && toolbarItem.selectedColor != null
+                        ? toolbarItem.selectedColor
+                        : toolbarItem.color,
                     borderRadius: const BorderRadius.all(Radius.circular(12)),
                     boxShadow: [
                       BoxShadow(
@@ -99,10 +108,14 @@ class SideBarItem extends StatelessWidget {
                             curve: Constants.longPressAnimationCurve,
                             child: Text(
                               toolbarItem.title,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
+                              style: isSelected &&
+                                      toolbarItem.selectedTextStyle != null
+                                  ? toolbarItem.selectedTextStyle
+                                  : toolbarItem.textStyle ??
+                                      const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                      ),
                               maxLines: 1,
                             ),
                           ),
