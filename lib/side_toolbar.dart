@@ -198,6 +198,7 @@ class _PlayableToolbarWidgetState extends State<PlayableToolbarWidget> {
         child: Stack(
           children: [
             Container(
+              height: widget.toolbarHeight,
               width: widget.toolbarWidth,
               decoration: BoxDecoration(
                 color: widget.toolbarBackgroundColor,
