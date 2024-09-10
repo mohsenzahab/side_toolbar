@@ -7,10 +7,10 @@ class ListItemModel {
   final TextStyle? textStyle;
   final TextStyle? selectedTextStyle;
   final Widget icon;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   ListItemModel({
-    required this.onTap,
+    this.onTap,
     required this.title,
     required this.color,
     required this.icon,

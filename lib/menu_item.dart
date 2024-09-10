@@ -37,7 +37,7 @@ class SideBarItem extends StatelessWidget {
       alignment: AlignmentDirectional.centerStart,
       child: GestureDetector(
         onTap: () {
-          toolbarItem.onTap();
+          toolbarItem.onTap?.call();
           onItemSelect?.call();
         },
         child: SizedBox(
