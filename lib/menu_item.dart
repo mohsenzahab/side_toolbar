@@ -59,7 +59,7 @@ class SideBarItem extends StatelessWidget {
                     color: isSelected && toolbarItem.selectedColor != null
                         ? toolbarItem.selectedColor
                         : toolbarItem.color,
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    borderRadius: toolbarItem.borderRadius,
                     boxShadow: [
                       BoxShadow(
                         blurRadius: 10,

@@ -8,12 +8,14 @@ class ListItemModel {
   final TextStyle? selectedTextStyle;
   final Widget icon;
   final VoidCallback? onTap;
+  final BorderRadius? borderRadius;
 
   ListItemModel({
     this.onTap,
     required this.title,
     required this.color,
     required this.icon,
+    this.borderRadius,
     this.selectedColor,
     this.textStyle,
     this.selectedTextStyle,
