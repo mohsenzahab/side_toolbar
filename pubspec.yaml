@@ -1,10 +1,10 @@
 name: side_toolbar
 description: A playable and customizable and easy-to-use toolbar made with flutter
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/mohsenzahab/side_toolbar
 
 environment:
-  sdk: ">=2.17.3 <3.0.0"
+  sdk: ">=3.7.2 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -14,6 +14,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
